@@ -1,0 +1,18 @@
+{
+  "name": "walking_dead_tweets",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "dependencies": {
+    "mongodb": "^2.0.42",
+    "node-tweet-stream": "^1.8.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "John Pettigrew",
+  "license": "Apache",
+  "private": true
+}

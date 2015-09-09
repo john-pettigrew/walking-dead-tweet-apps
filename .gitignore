@@ -1,0 +1,4 @@
+node/settings.json
+*.swp
+node/node_modules/*
+node/npm-debug.log
