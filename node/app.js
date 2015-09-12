@@ -14,6 +14,7 @@ MongoClient.connect('mongodb://mongo:27017/walking_dead', function(err, db){
 
       //Add data to help queries later
       var now = moment(tweet.timestamp_ms, 'x').utc();
+      tweet.now = {};
       tweet.now.dayOfYear = now.dayOfYear();
       tweet.now.dayOfMonth = now.date();
       tweet.now.dayOfWeek = now.weekday();
