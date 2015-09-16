@@ -12,51 +12,50 @@ MongoClient.connect('mongodb://mongo:27017/walking_dead', function(err, db){
       function(tweetNumber){
         console.log('\nNumber of tweets: '+tweetNumber);
         console.log('------------------------');
-        //Tweets per day
-        queryLib.countTweetsPerDay(tweetsCollection)
-        .then(
-          function(days){
 
-            console.log('\nTWEETS PER DAY');
-            days.forEach(function(day){
-              console.log(moment(day._id, 'DDD').format('MM-DD-YYYY') + ' ' + day.count);
-            });
-            console.log('------------------------');
+        return queryLib.countTweetsPerDay(tweetsCollection);
+      }
+    )
+    .then(
+      //Tweets per day
+      function(days){
 
-            //tweets per hour
-            queryLib.countTweetsPerHour(tweetsCollection)
-            .then(
-              function(hours){
+        console.log('\nTWEETS PER DAY');
+        days.forEach(function(day){
+          console.log(moment(day._id, 'DDD').format('MM-DD-YYYY') + ' ' + day.count);
+        });
+        console.log('------------------------');
 
-                console.log('\nTWEETS PER HOUR');
-                hours.forEach(function(hour){
-                  console.log(hour._id + ' ' + hour.number);
-                });
 
-                console.log('------------------------');
-                
-                queryLib.countTweetsForDay(tweetsCollection, 1)
-                .then(
-                  function(day){
-                    console.log('\nTWEETS FOR DAY');
-                    console.log(day);
-                    process.exit();
+        return queryLib.countTweetsPerHour(tweetsCollection);
+      }
+    )
+    .then(
+      function(hours){
+        //tweets per hour
 
-                  }
-                )
-                .catch(queryError);
+        console.log('\nTWEETS PER HOUR');
+        hours.forEach(function(hour){
+          console.log(hour._id + ' ' + hour.number);
+        });
 
-              }
-            )
-            .catch(queryError);
+        console.log('------------------------');
 
-          }
-        )
-        .catch(queryError);
+        return queryLib.countTweetsForDay(tweetsCollection, 1);
+      }
+    )
+    .then(
+      function(day){
+        console.log('\nTWEETS FOR DAY');
+        console.log(day);
+        process.exit();
 
       }
     )
     .catch(queryError);
+
+
+
 
     function queryError(err){
       console.log('Error');
