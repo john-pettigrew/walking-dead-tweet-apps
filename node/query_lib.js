@@ -1,3 +1,5 @@
+var async = require('async');
+
 exports.findTotalTweets = function(tweetsCollection){
   var p = new Promise(function(resolve, reject){
     tweetsCollection.find({}).count(function(err, res){
@@ -82,6 +84,66 @@ exports.countTweetsPerHour = function(tweetsCollection){
         reject(err);
       }
     });
+  });
+  return p;
+};
+
+exports.mostUsedTweetWords = function(tweetsCollection){
+
+  var p = new Promise(function(resolve, reject){
+
+    tweetsCollection.mapReduce(
+      //map
+      function(){
+        var self = this;
+
+        //replace some escaped characters with spaces
+        var invalidWords = ['\\n', '\n', '\r', '\\r', '\"', '\''];
+        invalidWords.forEach(function(invalidWord){
+          self.text = self.text.replace((new RegExp(invalidWord, 'g')), ' ');
+        });
+
+        //remove some punctuation
+        this.text = this.text.replace(/\./g, '').replace(/\!/g, '').replace(/\,/g, '').replace(/\?/g, '');
+
+        //convert to array
+        var wordsFromTweet = this.text.split(' ');
+
+        //emit words
+        for(var wordIndex in wordsFromTweet){
+          if(wordsFromTweet[wordIndex]){
+            emit(wordsFromTweet[wordIndex], 1);
+          }
+        }
+      },
+      //reduce
+      function(word, freq){
+        //count the number of times the word was used
+        return freq.length;
+      },
+      {
+        query: {},
+        out: {inline: 1}
+      },
+      function(err, results){
+        if(!err){
+          //sort results
+          async.sortBy(
+            results,
+            function(word, wordCallback){
+              wordCallback(null, (-1 * (word.value)));
+            },
+            function(err, sortedResults){
+              //return top results
+              resolve(sortedResults.slice(0, 40));
+            }
+          );
+
+        }else{
+          reject(err);
+        }
+      }
+    );
   });
   return p;
 };

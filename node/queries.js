@@ -48,12 +48,22 @@ MongoClient.connect('mongodb://mongo:27017/walking_dead', function(err, db){
       function(day){
         console.log('\nTWEETS FOR DAY');
         console.log(day);
-        process.exit();
+        console.log('------------------------');
 
+        return queryLib.mostUsedTweetWords(tweetsCollection);
+      }
+    )
+    .then(
+      function(results){
+        console.log('\nMOST USED WORDS FROM TWEETS');
+        results.forEach(function(result){
+          console.log('word: \"' + result._id + '\" \| used \"' + result.value + '\" times');
+        });
+        console.log('------------------------');
+        process.exit();
       }
     )
     .catch(queryError);
-
 
 
 
