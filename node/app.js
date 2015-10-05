@@ -11,21 +11,23 @@ MongoClient.connect('mongodb://mongo:27017/walking_dead', function(err, db){
     var tweetsCollection = db.collection('tweets');
 
     t.on('tweet', function(tweet){
+      if(tweet.text.toLowerCase().indexOf('walking dead') > -1){
 
-      //Add data to help queries later
-      var now = moment(tweet.timestamp_ms, 'x').utc();
-      tweet.now = {};
-      tweet.now.dayOfYear = now.dayOfYear();
-      tweet.now.dayOfMonth = now.date();
-      tweet.now.dayOfWeek = now.weekday();
-      tweet.now.hour = now.hour();
-      tweet.now.minute = now.minute();
+        //Add data to help queries later
+        var now = moment(tweet.timestamp_ms, 'x').utc();
+        tweet.now = {};
+        tweet.now.dayOfYear = now.dayOfYear();
+        tweet.now.dayOfMonth = now.date();
+        tweet.now.dayOfWeek = now.weekday();
+        tweet.now.hour = now.hour();
+        tweet.now.minute = now.minute();
 
-      tweetsCollection.insert(tweet, function(err){
-        if(err){
-          console.log('SAVE ERROR');
-        }
-      });
+        tweetsCollection.insert(tweet, function(err){
+          if(err){
+            console.log('SAVE ERROR');
+          }
+        });
+      }
     });
 
     t.on('error', function(err){

@@ -96,22 +96,24 @@ exports.mostUsedTweetWords = function(tweetsCollection){
       //map
       function(){
         var self = this;
+        self.text = self.text.toLowerCase();
 
-        //replace some escaped characters with spaces
-        var invalidWords = ['\\n', '\n', '\r', '\\r', '\"', '\''];
+
+        //remove some punctuation
+        this.text = this.text.replace(/\./g, '').replace(/\!/g, '').replace(/\,/g, '').replace(/\?/g, '').replace(/\)/g, '').replace(/\(/g, '').replace(/\-/g, '').replace(/\_/g, '');
+
+        var invalidWords = ['\\n', '\n', '\r', '\\r', '\"', '\'', 'for', 'and'];
         invalidWords.forEach(function(invalidWord){
           self.text = self.text.replace((new RegExp(invalidWord, 'g')), ' ');
         });
 
-        //remove some punctuation
-        this.text = this.text.replace(/\./g, '').replace(/\!/g, '').replace(/\,/g, '').replace(/\?/g, '');
 
         //convert to array
         var wordsFromTweet = this.text.split(' ');
 
         //emit words
         for(var wordIndex in wordsFromTweet){
-          if(wordsFromTweet[wordIndex]){
+          if(wordsFromTweet[wordIndex] && wordsFromTweet[wordIndex].length > 2){
             emit(wordsFromTweet[wordIndex], 1);
           }
         }
